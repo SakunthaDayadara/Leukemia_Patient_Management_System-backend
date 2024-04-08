@@ -1,6 +1,7 @@
 class PatientsController < ApplicationController
   before_action :set_patient, only: %i[ show update destroy ]
 
+
   # GET /patients
   def index
     @patients = Patient.all
@@ -18,7 +19,7 @@ class PatientsController < ApplicationController
     @patient = Patient.new(patient_params)
 
     if @patient.save
-      render json: @patient, status: :created, location: @patient
+      render json: { patient_id: @patient.patient_id , message: "Patient created successfully" }, status: :created
     else
       render json: { errors: @patient.errors.full_messages }, status: :unprocessable_entity
     end
@@ -44,8 +45,9 @@ class PatientsController < ApplicationController
       @patient = Patient.find(params[:id])
     end
 
+
     # Only allow a list of trusted parameters through.
     def patient_params
-      params.require(:patient).permit(:patient_id, :dob, :nic, :address, :gender, :username, :password, :first_name, :last_name)
+      params.require(:patient).permit(:dob, :nic, :address, :gender, :username, :password, :first_name, :last_name)
     end
 end
