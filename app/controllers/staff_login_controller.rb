@@ -1,5 +1,6 @@
 class StaffLoginController < ApplicationController
-  before_action :staff_authorized, only: [:staff_auto_login]
+  before_action -> { authorized("staff") }, only: [:staff_auto_login]
+  before_action -> { authorized(["admin"]) }, only: [:admin_auto_login]
   def login
     # Assuming params[:username] and params[:password] are provided in the request
 
@@ -59,6 +60,11 @@ class StaffLoginController < ApplicationController
     else
       render json: { error: "User not found" }, status: :not_found
     end
+  end
+
+  def admin_auto_login
+    user_id = Admin.find_by(username: @current_user.username)&.admin_id
+    render json: { username: @current_user.username, user_id: user_id, role: @decoded[:role] }, status: :ok
   end
 
   private
