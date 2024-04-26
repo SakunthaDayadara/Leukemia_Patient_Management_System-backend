@@ -19,6 +19,19 @@ class ApplicationController < ActionController::API
         else
           # Handle other staff roles here if necessary
         end
+      when "all"
+        case @decoded[:role]
+        when "doctor"
+          @current_user = Doctor.find(@decoded[:user_id])
+        when "admin"
+          @current_user = Admin.find(@decoded[:user_id])
+        when "nurse"
+          #@current_user = Nurse.find(@decoded[:user_id])
+        when "patient"
+          @current_user = Patient.find(@decoded[:user_id])
+        else
+          # Handle other roles here if necessary
+        end
       when Array
         if roles_required.include?(@decoded[:role])
           case @decoded[:role]
