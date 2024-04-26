@@ -4,6 +4,8 @@ class Patient < ApplicationRecord
 
   self.primary_key = 'patient_id'
 
+  validates :gender, presence: true, inclusion: { in: %w(Male Female Other) }
+
   private
 
     def generate_patient_id

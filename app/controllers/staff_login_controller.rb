@@ -1,5 +1,5 @@
 class StaffLoginController < ApplicationController
-  before_action :authorized, only: [:staff_auto_login]
+  before_action :staff_authorized, only: [:staff_auto_login]
   def login
     # Assuming params[:username] and params[:password] are provided in the request
 
@@ -62,23 +62,6 @@ class StaffLoginController < ApplicationController
   end
 
   private
-  def authorized
-    header = request.headers['Authorization']
-    header = header.split(' ').last if header
-    begin
-      @decoded = JsonWebToken.decode(header)
-      if @decoded[:role] == "doctor"
-        @current_user = Doctor.find(@decoded[:user_id])
-      elsif @decoded[:role] == "admin"
-        @current_user = Admin.find(@decoded[:user_id])
-      else
-        # Handle other roles here if necessary
-      end
-    rescue ActiveRecord::RecordNotFound => e
-      render json: { errors: e.message }, status: :unauthorized
-    rescue JWT::DecodeError => e
-      render json: { errors: e.message }, status: :unauthorized
-    end
-  end
+
 
 end

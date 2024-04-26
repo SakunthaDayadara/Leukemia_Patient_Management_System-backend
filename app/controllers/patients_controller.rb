@@ -1,14 +1,15 @@
 class PatientsController < ApplicationController
-  before_action :authorized, only: [:auto_login]
+  before_action :patient_authorized, only: [:auto_login]
 
   def auto_login
     render json: {patient_id: @current_user.patient_id, username: @current_user.username }, status: :ok
   end
 
   def login
+
     @patient = Patient.find_by(username: params[:username])
     if @patient&.authenticate(params[:password])
-      token = JsonWebToken.encode(patient_id: @patient.patient_id)
+      token = JsonWebToken.encode(user_id: @patient.patient_id, role: "patient")
       time = Time.now + 24.hours.to_i
       render json: { token: token, exp: time.strftime("%m-%d-%Y %H:%M"),
                      patient_id: @patient.patient_id }, status: :ok
@@ -68,25 +69,5 @@ class PatientsController < ApplicationController
       params.require(:patient).permit(:dob, :nic, :address, :gender, :username, :password, :first_name, :last_name)
     end
 
-    def logged_in_user
-      if decoded_token
-        patient_id = decoded_token[0]['patient_id']
-        @patient = Patient.find_by(patient_id: patient_id)
-      end
-    end
 
-
-
-    def authorized
-      header = request.headers['Authorization']
-      header = header.split(' ').last if header
-      begin
-        @decoded = JsonWebToken.decode(header)
-        @current_user = Patient.find(@decoded[:patient_id])
-      rescue ActiveRecord::RecordNotFound => e
-        render json: { errors: e.message }, status: :unauthorized
-      rescue JWT::DecodeError => e
-        render json: { errors: e.message }, status: :unauthorized
-      end
-    end
 end
