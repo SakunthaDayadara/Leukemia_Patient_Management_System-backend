@@ -38,11 +38,24 @@ class DoctorsController < ApplicationController
     @doctor.destroy
   end
 
+  def find_by_doctor_id
+    set_doctor_by_doctor_id
+    if @doctor
+      render json: @doctor
+    else
+      render json: { error: "Doctor not found" }, status: :not_found
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_doctor
       @doctor = Doctor.find(params[:id])
     end
+
+  def set_doctor_by_doctor_id
+    @doctor = Doctor.find_by(doctor_id: params[:doctor_id])
+  end
 
     # Only allow a list of trusted parameters through.
     def doctor_params

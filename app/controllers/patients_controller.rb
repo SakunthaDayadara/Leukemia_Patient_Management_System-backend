@@ -1,5 +1,6 @@
 class PatientsController < ApplicationController
   before_action -> { authorized("patient") }, only: [:auto_login]
+  before_action -> { authorized(%w[nurse doctor]) }, only: [:create]
 
   def auto_login
     render json: {username: @current_user.username, user_id: @current_user.patient_id , role: @decoded[:role] }, status: :ok

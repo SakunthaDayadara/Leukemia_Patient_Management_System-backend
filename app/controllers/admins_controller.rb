@@ -38,11 +38,24 @@ class AdminsController < ApplicationController
     @admin.destroy
   end
 
+  def find_by_admin_id
+    set_admin_by_admin_id
+    if @admin
+      render json: @admin
+    else
+      render json: { error: "Admin not found" }, status: :not_found
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_admin
       @admin = Admin.find(params[:id])
     end
+
+  def set_admin_by_admin_id
+    @admin = Admin.find_by(admin_id: params[:admin_id])
+  end
 
     # Only allow a list of trusted parameters through.
     def admin_params

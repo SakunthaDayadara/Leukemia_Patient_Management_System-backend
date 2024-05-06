@@ -1,6 +1,14 @@
 Rails.application.routes.draw do
-  resources :admins
-  resources :doctors
+  resources :admins do
+    collection do
+      get 'find_by_admin_id'
+    end
+  end
+  resources :doctors do
+    collection do
+      get 'find_by_doctor_id'
+    end
+  end
   resources :patients do
     collection do
       get 'find_by_patient_id'
