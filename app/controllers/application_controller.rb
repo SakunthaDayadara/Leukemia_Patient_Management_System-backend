@@ -15,7 +15,7 @@ class ApplicationController < ActionController::API
         elsif @decoded[:role] == "admin"
           @current_user = Admin.find(@decoded[:user_id])
         elsif @decoded[:role] == "nurse"
-          #@current_user = Nurse.find(@decoded[:user_id])
+          @current_user = Nurse.find(@decoded[:user_id])
         else
           # Handle other staff roles here if necessary
         end
@@ -26,7 +26,7 @@ class ApplicationController < ActionController::API
         when "admin"
           @current_user = Admin.find(@decoded[:user_id])
         when "nurse"
-          #@current_user = Nurse.find(@decoded[:user_id])
+          @current_user = Nurse.find(@decoded[:user_id])
         when "patient"
           @current_user = Patient.find(@decoded[:user_id])
         else
@@ -40,7 +40,7 @@ class ApplicationController < ActionController::API
           when "admin"
             @current_user = Admin.find(@decoded[:user_id])
           when "nurse"
-            #@current_user = Nurse.find(@decoded[:user_id])
+            @current_user = Nurse.find(@decoded[:user_id])
           else
             # Handle other staff roles here if necessary
           end

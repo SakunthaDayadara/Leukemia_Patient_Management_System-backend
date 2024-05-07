@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  nurse_id: MyString
+  name: MyString
+  username: MyString
+  password_digest: MyString
+  ward: one
+
+two:
+  nurse_id: MyString
+  name: MyString
+  username: MyString
+  password_digest: MyString
+  ward: two

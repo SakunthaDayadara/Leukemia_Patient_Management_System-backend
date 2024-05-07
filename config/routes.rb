@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  resources :nurses
+  resources :wards
   resources :admins do
     collection do
       get 'find_by_admin_id'

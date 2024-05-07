@@ -17,13 +17,14 @@ class StaffLoginController < ApplicationController
     end
 
     # If not already found, check if the credentials match a nurse
-    #unless user
-    #  nurse = Nurse.find_by(username: params[:username])
-    #  if nurse && nurse.authenticate(params[:password])
-    #    user = nurse
-    #    role = "nurse"
-    #  end
-    #end
+    unless user
+      nurse = Nurse.find_by(username: params[:username])
+      if nurse && nurse.authenticate(params[:password])
+        user = nurse
+        role = "nurse"
+        token = JsonWebToken.encode(user_id: nurse.nurse_id, role: role)
+      end
+    end
 
     # If not already found, check if the credentials match an admin
     unless user
@@ -50,9 +51,8 @@ class StaffLoginController < ApplicationController
       user_id = Doctor.find_by(username: @current_user.username)&.doctor_id
     when "admin"
       user_id = Admin.find_by(username: @current_user.username)&.admin_id
-      #when "nurse"
-      # Assuming there's a nurse_id field for the Nurse model
-      #user_id = Nurse.find_by(username: @current_user.username)&.nurse_id
+    when "nurse"
+      user_id = Nurse.find_by(username: @current_user.username)&.nurse_id
     end
 
     if user_id
