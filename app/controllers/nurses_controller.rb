@@ -38,11 +38,24 @@ class NursesController < ApplicationController
     @nurse.destroy
   end
 
+  def find_by_nurse_id
+    set_nurse_by_nurse_id
+    if @nurse
+      render json: @nurse
+    else
+      render json: { error: "Nurse not found" }, status: :not_found
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_nurse
       @nurse = Nurse.find(params[:id])
     end
+
+  def set_nurse_by_nurse_id
+    @nurse = Nurse.find_by(nurse_id: params[:nurse_id])
+  end
 
     # Only allow a list of trusted parameters through.
     def nurse_params

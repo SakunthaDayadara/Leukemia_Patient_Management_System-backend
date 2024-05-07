@@ -1,5 +1,9 @@
 Rails.application.routes.draw do
-  resources :nurses
+  resources :nurses do
+    collection do
+      get 'find_by_nurse_id'
+    end
+  end
   resources :wards
   resources :admins do
     collection do
