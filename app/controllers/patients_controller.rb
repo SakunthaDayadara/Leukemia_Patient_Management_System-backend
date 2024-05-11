@@ -1,6 +1,6 @@
 class PatientsController < ApplicationController
-  before_action -> { authorized("patient") }, only: [:auto_login]
-  before_action -> { authorized(%w[nurse doctor]) }, only: [:create]
+  before_action -> { authorized("patient") }, only: [:auto_login, :create]
+  before_action -> { authorized(%w[nurse doctor]) }, only: [:update]
 
   def auto_login
     render json: {username: @current_user.username, user_id: @current_user.patient_id , role: @decoded[:role] }, status: :ok
@@ -69,7 +69,7 @@ class PatientsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def patient_params
-      params.require(:patient).permit(:dob, :nic, :address, :gender, :username, :password, :first_name, :last_name)
+      params.require(:patient).permit(:dob, :nic, :address, :gender, :username, :password, :first_name, :last_name, :telephone)
     end
 
 

@@ -1,5 +1,6 @@
 class NursesController < ApplicationController
   before_action :set_nurse, only: %i[ show update destroy ]
+  before_action -> { authorized("admin") }, only: [:create]
 
   # GET /nurses
   def index
