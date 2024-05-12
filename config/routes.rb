@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   resources :nurses do
     collection do
       get 'find_by_nurse_id'
+      post 'reset_password'
     end
   end
   resources :wards
@@ -13,6 +14,7 @@ Rails.application.routes.draw do
   resources :doctors do
     collection do
       get 'find_by_doctor_id'
+      post 'reset_password'
     end
   end
   resources :patients do

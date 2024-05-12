@@ -48,6 +48,15 @@ class NursesController < ApplicationController
     end
   end
 
+  def reset_password
+    set_nurse_by_nurse_id
+    if @nurse.update(password: params[:password])
+      render json: { message: "Password reset successfully" }, status: :ok
+    else
+      render json: { error: "Password reset failed" }, status: :unprocessable_entity
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_nurse
