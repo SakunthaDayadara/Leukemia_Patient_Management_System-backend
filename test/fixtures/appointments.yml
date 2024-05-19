@@ -1,0 +1,25 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  appointment_date: 2024-05-19
+  appointment_status: MyString
+  bmt_date: 2024-05-19
+  fbc_status: false
+  bp_status: false
+  bmt_report: MyString
+  fbc_report: MyString
+  bp_report: MyString
+  patient: one
+  nurse: one
+
+two:
+  appointment_date: 2024-05-19
+  appointment_status: MyString
+  bmt_date: 2024-05-19
+  fbc_status: false
+  bp_status: false
+  bmt_report: MyString
+  fbc_report: MyString
+  bp_report: MyString
+  patient: two
+  nurse: two

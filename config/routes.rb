@@ -1,8 +1,15 @@
 Rails.application.routes.draw do
+  resources :appointments do
+    collection do
+      get 'find_by_patient'
+      get 'find_by_appointment_id'
+    end
+  end
   resources :nurses do
     collection do
       get 'find_by_nurse_id'
       post 'reset_password'
+      get 'get_ward_gender'
     end
   end
   resources :wards
@@ -22,6 +29,11 @@ Rails.application.routes.draw do
       get 'find_by_patient_id'
       get 'auto_login'
       post 'login'
+      patch 'make_appointment'
+      get 'initial_appointment'
+      patch 'make_test_done'
+      get 'test_done'
+      delete 'delete_by_patient_id'
     end
   end
 
