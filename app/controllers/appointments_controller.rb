@@ -1,5 +1,7 @@
 class AppointmentsController < ApplicationController
-  before_action :set_appointment, only: %i[ show update destroy ]
+  before_action -> { authorized("patient") }, only: [:create]
+
+
 
   # GET /appointments
   def index
@@ -21,6 +23,82 @@ class AppointmentsController < ApplicationController
       render json: @appointment.errors, status: :unprocessable_entity
     end
   end
+
+  def find_by_date_and_patient_gender
+    date = params[:date]
+    gender = params[:gender]
+
+    if date.present? && gender.present?
+      appointments = Appointment.joins(:patient)
+                                .where(appointment_date: date, patients: { gender: gender })
+      render json: appointments, status: :ok
+    else
+      render json: { error: "Date and gender parameters are required" }, status: :unprocessable_entity
+    end
+  end
+
+  def confirm_appointment
+    @appointments = Appointment.where(appointment_status: "pending")
+    render json: @appointments
+  end
+
+  def nurse_confirm_appointment
+    set_appointment_by_appointment_id
+    if @appointment
+      @appointment.update(appointment_status: "confirmed", nurse_id: params[:nurse_id])
+      render json: @appointment
+    else
+      render json: { error: "Appointment not found" }, status: :not_found
+    end
+  end
+
+  def make_reschedule
+    set_appointment_by_appointment_id
+    if @appointment
+      @appointment.update(appointment_status: "To reschedule")
+      render json: @appointment
+    else
+      render json: { error: "Appointment not found" }, status: :not_found
+    end
+  end
+
+  def make_reschedule_table
+    @appointments = Appointment.where(appointment_status: "to reschedule")
+    render json: @appointments
+  end
+
+  def make_reschedule_done
+    set_appointment_by_appointment_id
+    if @appointment
+      @appointment.update(appointment_status: "confirmed")
+      render json: @appointment
+    else
+      render json: { error: "Appointment not found" }, status: :not_found
+    end
+  end
+
+  def ongoing_appointment
+    @appointments = Appointment.where(appointment_status: "confirmed")
+    render json: @appointments
+  end
+
+  def make_appointment_done
+    set_appointment_by_appointment_id
+    if @appointment
+      @appointment.update(appointment_status: "done")
+      render json: @appointment
+    else
+      render json: { error: "Appointment not found" }, status: :not_found
+    end
+  end
+
+  def finished_appointment
+    @appointments = Appointment.where(appointment_status: "done")
+    render json: @appointments
+  end
+
+
+
 
   def find_by_appointment_id
     set_appointment_by_appointment_id
@@ -56,6 +134,16 @@ class AppointmentsController < ApplicationController
     @appointment.destroy
   end
 
+  def delete_by_appointment_id
+    set_appointment_by_appointment_id
+    if @appointment
+      @appointment.destroy
+      render json: { message: 'Appointment deleted successfully' }, status: :ok
+    else
+      render json: { error: "Appointment with ID #{params[:appointment_id]} not found" }, status: :not_found
+    end
+  end
+
   private
 
   def set_appointment_by_patient
@@ -66,9 +154,7 @@ class AppointmentsController < ApplicationController
     @appointment = Appointment.find_by(appointment_id: params[:appointment_id])
   end
     # Use callbacks to share common setup or constraints between actions.
-    def set_appointment
-      @appointment = Appointment.find(params[:id])
-    end
+
 
     # Only allow a list of trusted parameters through.
     def appointment_params

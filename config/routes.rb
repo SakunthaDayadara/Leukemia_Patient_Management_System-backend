@@ -3,6 +3,16 @@ Rails.application.routes.draw do
     collection do
       get 'find_by_patient'
       get 'find_by_appointment_id'
+      get 'find_by_date_and_patient_gender'
+      get 'confirm_appointment'
+      delete 'delete_by_appointment_id'
+      patch 'nurse_confirm_appointment'
+      patch 'make_reschedule'
+      get 'make_reschedule_table'
+      patch 'make_reschedule_done'
+      get 'ongoing_appointment'
+      patch 'make_appointment_done'
+      get 'finished_appointment'
     end
   end
   resources :nurses do
