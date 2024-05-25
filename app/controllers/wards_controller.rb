@@ -38,6 +38,16 @@ class WardsController < ApplicationController
     @ward.destroy
   end
 
+  def get_wards_by_gender
+    @wards = Ward.where(patient_gender: params[:patient_gender])
+    render json: @wards
+  end
+
+
+
+
+
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_ward

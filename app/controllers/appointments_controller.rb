@@ -55,7 +55,7 @@ class AppointmentsController < ApplicationController
   def make_reschedule
     set_appointment_by_appointment_id
     if @appointment
-      @appointment.update(appointment_status: "To reschedule")
+      @appointment.update(appointment_status: "to reschedule")
       render json: @appointment
     else
       render json: { error: "Appointment not found" }, status: :not_found
@@ -78,12 +78,12 @@ class AppointmentsController < ApplicationController
   end
 
   def ongoing_appointment
-    @appointments = Appointment.where(appointment_status: "confirmed")
+    @appointments = Appointment.where(appointment_status: ["confirmed", "to diagnose"])
     render json: @appointments
   end
 
   def make_appointment_done
-    set_appointment_by_appointment_id
+    set_appointment_by_patient
     if @appointment
       @appointment.update(appointment_status: "done")
       render json: @appointment
@@ -97,11 +97,40 @@ class AppointmentsController < ApplicationController
     render json: @appointments
   end
 
+  def nurse_make_test_done
+    set_appointment_by_patient
+    if @appointment
+      @appointment.update(fbc_status: true, bp_status: true, bmt_date: params[:bmt_date])
+      render json: @appointment
+    else
+      render json: { error: "Appointment not found" }, status: :not_found
+    end
+  end
+
+  def nurse_make_to_diagnose
+    set_appointment_by_patient
+    if @appointment
+      @appointment.update(fbc_report: params[:fbc_report], bp_report: params[:bp_report], bmt_report: params[:bmt_report], appointment_status: "to diagnose")
+      render json: @appointment
+    else
+      render json: { error: "Appointment not found" }, status: :not_found
+    end
+  end
+
 
 
 
   def find_by_appointment_id
     set_appointment_by_appointment_id
+    if @appointment
+      render json: @appointment
+    else
+      render json: @appointment.errors, status: :unprocessable_entity
+    end
+  end
+
+  def find_by_patient_id
+    set_appointment_by_patient
     if @appointment
       render json: @appointment
     else

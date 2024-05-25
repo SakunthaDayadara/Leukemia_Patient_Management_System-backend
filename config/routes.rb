@@ -1,4 +1,26 @@
 Rails.application.routes.draw do
+  resources :treatment_plans do
+    collection do
+      get 'find_by_treatment_id'
+      get 'find_by_doctor_id'
+      get 'find_by_patient_id'
+      get 'find_by_diagnose_id'
+    end
+  end
+  resources :diagnoses do
+    collection do
+      get 'find_by_diagnose_id'
+      get 'find_by_patient_id'
+      get 'find_by_doctor_id'
+    end
+  end
+  resources :beds do
+    collection do
+      get 'get_available_beds_by_ward'
+      patch 'admit_patient'
+      patch 'discharge_patient'
+    end
+  end
   resources :appointments do
     collection do
       get 'find_by_patient'
@@ -13,6 +35,9 @@ Rails.application.routes.draw do
       get 'ongoing_appointment'
       patch 'make_appointment_done'
       get 'finished_appointment'
+      patch 'nurse_make_test_done'
+      patch 'nurse_make_to_diagnose'
+      get 'find_by_patient_id'
     end
   end
   resources :nurses do
@@ -22,7 +47,12 @@ Rails.application.routes.draw do
       get 'get_ward_gender'
     end
   end
-  resources :wards
+  resources :wards do
+    collection do
+      get 'get_wards_by_gender'
+
+    end
+  end
   resources :admins do
     collection do
       get 'find_by_admin_id'
@@ -44,6 +74,15 @@ Rails.application.routes.draw do
       patch 'make_test_done'
       get 'test_done'
       delete 'delete_by_patient_id'
+      patch 'make_to_diagnose'
+      get 'to_diagnose'
+      patch 'doctor_make_diagnose'
+      get 'to_admit_table'
+      patch 'nurse_admit_patient'
+      get 'admitted_patients'
+      patch 'discharge_patient'
+      get 'doctor_categorize_table'
+      patch 'doctor_make_categorize'
     end
   end
 

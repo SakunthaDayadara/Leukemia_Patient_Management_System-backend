@@ -1,6 +1,10 @@
 class Patient < ApplicationRecord
   has_secure_password
   before_create :generate_patient_id
+  has_one :appointment, dependent: :destroy
+  has_one :bed, dependent: :destroy
+  has_one :diagnosis, dependent: :destroy
+  has_one :treatment_plan, dependent: :destroy
 
   self.primary_key = 'patient_id'
 

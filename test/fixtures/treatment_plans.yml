@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  treatment_id: MyString
+  treatment_type: MyString
+  treatment_status: MyString
+  doctor_id: MyString
+  patient_id: MyString
+  diagnose_id: MyString
+
+two:
+  treatment_id: MyString
+  treatment_type: MyString
+  treatment_status: MyString
+  doctor_id: MyString
+  patient_id: MyString
+  diagnose_id: MyString

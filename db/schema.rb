@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_05_19_174208) do
+ActiveRecord::Schema[7.0].define(version: 2024_05_25_194614) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -33,6 +33,23 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_19_174208) do
     t.string "bp_report"
     t.string "patient_id", null: false
     t.string "nurse_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "beds", primary_key: "bed_id", id: :string, force: :cascade do |t|
+    t.string "ward_num", null: false
+    t.boolean "is_occupied", default: false
+    t.string "patient_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "diagnoses", primary_key: "diagnose_id", id: :string, force: :cascade do |t|
+    t.string "category", default: "not_diagnosed"
+    t.string "doctor_notes", default: "no_notes"
+    t.string "doctor_id", null: false
+    t.string "patient_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -75,6 +92,17 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_19_174208) do
     t.string "current_diagnose", default: "not_diagnosed"
     t.string "stage_of_treatment", default: "not_started"
     t.string "accommodation_type", default: "not_selected"
+    t.boolean "advance_diagnose_status", default: false
+  end
+
+  create_table "treatment_plans", primary_key: "treatment_id", id: :string, force: :cascade do |t|
+    t.string "treatment_type", default: "not_selected"
+    t.string "treatment_status", default: "not_started"
+    t.string "doctor_id", null: false
+    t.string "patient_id", null: false
+    t.string "diagnose_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "wards", primary_key: "ward_num", id: :string, force: :cascade do |t|
@@ -85,5 +113,12 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_19_174208) do
 
   add_foreign_key "appointments", "nurses", primary_key: "nurse_id"
   add_foreign_key "appointments", "patients", primary_key: "patient_id"
+  add_foreign_key "beds", "patients", primary_key: "patient_id"
+  add_foreign_key "beds", "wards", column: "ward_num", primary_key: "ward_num"
+  add_foreign_key "diagnoses", "doctors", primary_key: "doctor_id"
+  add_foreign_key "diagnoses", "patients", primary_key: "patient_id"
   add_foreign_key "nurses", "wards", column: "ward_num", primary_key: "ward_num"
+  add_foreign_key "treatment_plans", "diagnoses", column: "diagnose_id", primary_key: "diagnose_id"
+  add_foreign_key "treatment_plans", "doctors", primary_key: "doctor_id"
+  add_foreign_key "treatment_plans", "patients", primary_key: "patient_id"
 end

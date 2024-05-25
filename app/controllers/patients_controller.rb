@@ -23,13 +23,13 @@ class PatientsController < ApplicationController
   end
 
   def initial_appointment
-    @patients = Patient.where(appointment_status: true).where(permanent_status: false).where(admission_status: "appointment")
+    @patients = Patient.where(appointment_status: true).where(permanent_status: false).where(admission_status: "appointment").where(diagnose_status: false)
     render json: @patients
   end
 
   def make_test_done
     set_patient_by_patient_id
-    if @patient.update(admission_status: "test_done")
+    if @patient.update(admission_status: "test_done", blood_type: params[:blood_type])
       render json: @patient
     else
       render json: @patient.errors, status: :unprocessable_entity
@@ -38,9 +38,76 @@ class PatientsController < ApplicationController
 
 
   def test_done
-    @patients = Patient.where(admission_status: "test_done").where(appointment_status: true).where(permanent_status: false)
+    @patients = Patient.where(admission_status: "test_done").where(appointment_status: true).where(permanent_status: false).where(diagnose_status: false)
     render json: @patients
   end
+
+  def make_to_diagnose
+    set_patient_by_patient_id
+    if @patient.update(admission_status: "to_diagnose")
+      render json: @patient
+    else
+      render json: @patient.errors, status: :unprocessable_entity
+    end
+  end
+
+
+  def to_diagnose
+    @patients = Patient.where(admission_status: "to_diagnose").where(appointment_status: true).where(permanent_status: false).where(diagnose_status: false)
+    render json: @patients
+  end
+
+  def doctor_make_diagnose
+    set_patient_by_patient_id
+    if @patient.update(admission_status: "diagnose_done", current_diagnose: params[:current_diagnose], diagnose_status: true)
+      render json: @patient
+    else
+      render json: @patient.errors, status: :unprocessable_entity
+    end
+  end
+
+  def to_admit_table
+    @patients = Patient.where(admission_status: "diagnose_done").where(appointment_status: true).where(permanent_status: false).where(current_diagnose: "cancer_patient").where(diagnose_status: true)
+    render json: @patients
+  end
+
+  def nurse_admit_patient
+    set_patient_by_patient_id
+    if @patient.update(admission_status: "admitted", bht_number: params[:bht_number], accommodation_type: "admitted", permanent_status: true, stage_of_treatment: "initial_admitted")
+      render json: @patient
+    else
+      render json: @patient.errors, status: :unprocessable_entity
+    end
+  end
+
+  def admitted_patients
+    @patients = Patient.where(admission_status: "admitted").where(appointment_status: true).where(permanent_status: true).where(accommodation_type: "admitted").where(diagnose_status: true).where(current_diagnose: "cancer_patient")
+    render json: @patients
+  end
+
+  def discharge_patient
+    set_patient_by_patient_id
+    if @patient.update(admission_status: "clinic", accommodation_type: params[:accommodation_type], stage_of_treatment: "clinic")
+      render json: @patient
+    else
+      render json: @patient.errors, status: :unprocessable_entity
+    end
+  end
+
+  def doctor_categorize_table
+    @patients = Patient.where(admission_status: "admitted").where(appointment_status: true).where(permanent_status: true).where(accommodation_type: "admitted").where(diagnose_status: true).where(current_diagnose: "cancer_patient").where(advance_diagnose_status: false)
+    render json: @patients
+  end
+
+  def doctor_make_categorize
+    set_patient_by_patient_id
+    if @patient.update(advance_diagnose_status: true, stage_of_treatment: "categorize_done", current_diagnose: "advance_cancer_patient")
+      render json: @patient
+    else
+      render json: @patient.errors, status: :unprocessable_entity
+    end
+  end
+
 
 
 
@@ -118,7 +185,7 @@ class PatientsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
   def patient_params
-    params.require(:patient).permit(:dob, :nic, :address, :gender, :username, :password, :first_name, :last_name, :telephone, :permanent_status, :diagnose_status, :appointment_status, :blood_type, :admission_status, :bht_number, :current_diagnose, :stage_of_treatment, :accommodation_type)
+    params.require(:patient).permit(:dob, :nic, :address, :gender, :username, :password, :first_name, :last_name, :telephone, :permanent_status, :diagnose_status, :appointment_status, :blood_type, :admission_status, :bht_number, :current_diagnose, :stage_of_treatment, :accommodation_type, :advance_diagnose_status)
   end
 
 

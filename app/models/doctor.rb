@@ -1,6 +1,8 @@
 class Doctor < ApplicationRecord
   has_secure_password
   before_create :generate_doctor_id
+  has_many :diagnoses, dependent: :destroy
+  has_many :treatment_plans, dependent: :destroy
 
   self.primary_key = 'doctor_id'
 
