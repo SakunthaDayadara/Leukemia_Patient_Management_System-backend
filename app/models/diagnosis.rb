@@ -1,6 +1,7 @@
 class Diagnosis < ApplicationRecord
   belongs_to :doctor
   belongs_to :patient
+  has_one :treatment_plan, primary_key: :diagnose_id, foreign_key: :diagnose_id
   before_create :generate_diagnose_id
 
   self.primary_key = 'diagnose_id'

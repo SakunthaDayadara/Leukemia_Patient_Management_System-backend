@@ -81,7 +81,7 @@ class PatientsController < ApplicationController
   end
 
   def admitted_patients
-    @patients = Patient.where(admission_status: "admitted").where(appointment_status: true).where(permanent_status: true).where(accommodation_type: "admitted").where(diagnose_status: true).where(current_diagnose: "cancer_patient")
+    @patients = Patient.where(admission_status: "admitted").where(appointment_status: true).where(permanent_status: true).where(accommodation_type: "admitted").where(diagnose_status: true).where(current_diagnose: %w[cancer_patient advance_cancer_patient])
     render json: @patients
   end
 
@@ -101,12 +101,43 @@ class PatientsController < ApplicationController
 
   def doctor_make_categorize
     set_patient_by_patient_id
-    if @patient.update(advance_diagnose_status: true, stage_of_treatment: "categorize_done", current_diagnose: "advance_cancer_patient")
+    if @patient.update(advance_diagnose_status: true, stage_of_treatment: "categorize_done", current_diagnose: "advance_cancer_patient", treatment_status: true)
       render json: @patient
     else
       render json: @patient.errors, status: :unprocessable_entity
     end
   end
+
+  def doctor_change_category_treatment_table
+    @patients = Patient.where(admission_status: "admitted").where(appointment_status: true).where(permanent_status: true).where(stage_of_treatment: "categorize_done").where(diagnose_status: true).where(current_diagnose: "advance_cancer_patient").where(advance_diagnose_status: true).where(treatment_status: true)
+    render json: @patients
+  end
+
+
+  def doctor_make_treatment_pause
+    set_patient_by_patient_id
+    if @patient.update(treatment_status: false)
+      render json: @patient
+    else
+      render json: @patient.errors, status: :unprocessable_entity
+    end
+  end
+
+  def doctor_resume_treatment_table
+    @patients = Patient.where(admission_status: "admitted").where(appointment_status: true).where(permanent_status: true).where(stage_of_treatment: "categorize_done").where(diagnose_status: true).where(current_diagnose: "advance_cancer_patient").where(advance_diagnose_status: true).where(treatment_status: false)
+    render json: @patients
+  end
+
+  def doctor_make_treatment_resume
+    set_patient_by_patient_id
+    if @patient.update(treatment_status: true)
+      render json: @patient
+    else
+      render json: @patient.errors, status: :unprocessable_entity
+    end
+  end
+
+
 
 
 
@@ -185,7 +216,7 @@ class PatientsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
   def patient_params
-    params.require(:patient).permit(:dob, :nic, :address, :gender, :username, :password, :first_name, :last_name, :telephone, :permanent_status, :diagnose_status, :appointment_status, :blood_type, :admission_status, :bht_number, :current_diagnose, :stage_of_treatment, :accommodation_type, :advance_diagnose_status)
+    params.require(:patient).permit(:dob, :nic, :address, :gender, :username, :password, :first_name, :last_name, :telephone, :permanent_status, :diagnose_status, :appointment_status, :blood_type, :admission_status, :bht_number, :current_diagnose, :stage_of_treatment, :accommodation_type, :advance_diagnose_status, :treatment_status)
   end
 
 

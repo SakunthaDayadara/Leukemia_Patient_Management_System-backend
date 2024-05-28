@@ -1,10 +1,15 @@
 Rails.application.routes.draw do
+  resources :references
+  resources :treatment_records
   resources :treatment_plans do
     collection do
       get 'find_by_treatment_id'
       get 'find_by_doctor_id'
       get 'find_by_patient_id'
       get 'find_by_diagnose_id'
+      patch 'doctor_pause_treatment'
+      patch 'doctor_resume_treatment'
+      patch 'doctor_change_treatment_type'
     end
   end
   resources :diagnoses do
@@ -12,6 +17,7 @@ Rails.application.routes.draw do
       get 'find_by_diagnose_id'
       get 'find_by_patient_id'
       get 'find_by_doctor_id'
+      patch 'doctor_change_category'
     end
   end
   resources :beds do
@@ -83,6 +89,13 @@ Rails.application.routes.draw do
       patch 'discharge_patient'
       get 'doctor_categorize_table'
       patch 'doctor_make_categorize'
+      get 'doctor_change_category_treatment_table'
+      patch 'doctor_change_category_treatment'
+      get 'doctor_treatment_table'
+      patch 'doctor_make_treatment'
+      patch 'doctor_make_treatment_pause'
+      get 'doctor_resume_treatment_table'
+      patch 'doctor_make_treatment_resume'
     end
   end
 

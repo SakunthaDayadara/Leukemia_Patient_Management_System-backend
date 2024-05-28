@@ -65,6 +65,18 @@ class DiagnosesController < ApplicationController
     end
   end
 
+  def doctor_change_category
+    set_diagnosis_by_patient_id
+    if @diagnosis
+      @diagnosis.update(category: params[:category])
+      render json: @diagnosis
+    else
+      render json: { error: "Diagnosis with ID #{params[:diagnose_id]} not found" }, status: :not_found
+    end
+  end
+
+
+
 
   private
     # Use callbacks to share common setup or constraints between actions.

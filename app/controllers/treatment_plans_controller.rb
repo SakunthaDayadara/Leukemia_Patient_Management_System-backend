@@ -75,6 +75,36 @@ class TreatmentPlansController < ApplicationController
     end
   end
 
+  def doctor_pause_treatment
+    set_treatment_plan_by_patient_id
+    if @treatment_plan
+      @treatment_plan.update(treatment_status: "paused")
+      render json: { message: "Treatment paused successfully" }, status: :ok
+    else
+      render json: { error: "Treatment with doctor ID #{params[:patient_id]} not found" }, status: :not_found
+    end
+  end
+
+  def doctor_resume_treatment
+    set_treatment_plan_by_patient_id
+    if @treatment_plan
+      @treatment_plan.update(treatment_status: "ongoing")
+      render json: { message: "Treatment resumed successfully" }, status: :ok
+    else
+      render json: { error: "Treatment with doctor ID #{params[:patient_id]} not found" }, status: :not_found
+    end
+  end
+
+  def doctor_change_treatment_type
+    set_treatment_plan_by_patient_id
+    if @treatment_plan
+      @treatment_plan.update(treatment_type: params[:treatment_type])
+      render json: { message: "Treatment type changed successfully" }, status: :ok
+    else
+      render json: { error: "Treatment with doctor ID #{params[:patient_id]} not found" }, status: :not_found
+    end
+  end
+
 
   private
     # Use callbacks to share common setup or constraints between actions.

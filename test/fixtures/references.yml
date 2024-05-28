@@ -1,0 +1,19 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  reference_id: MyString
+  reference_note: MyString
+  referred_doctor_id: MyString
+  referred_doctor_notes: MyString
+  reference_status: MyString
+  doctor_id: MyString
+  patient_id: MyString
+
+two:
+  reference_id: MyString
+  reference_note: MyString
+  referred_doctor_id: MyString
+  referred_doctor_notes: MyString
+  reference_status: MyString
+  doctor_id: MyString
+  patient_id: MyString

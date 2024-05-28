@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_05_25_194614) do
+ActiveRecord::Schema[7.0].define(version: 2024_05_28_213211) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -93,6 +93,18 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_25_194614) do
     t.string "stage_of_treatment", default: "not_started"
     t.string "accommodation_type", default: "not_selected"
     t.boolean "advance_diagnose_status", default: false
+    t.boolean "treatment_status", default: false
+  end
+
+  create_table "references", primary_key: "reference_id", id: :string, force: :cascade do |t|
+    t.string "reference_note"
+    t.string "referred_doctor_id"
+    t.string "referred_doctor_notes"
+    t.string "reference_status", default: "pending"
+    t.string "doctor_id", null: false
+    t.string "patient_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "treatment_plans", primary_key: "treatment_id", id: :string, force: :cascade do |t|
@@ -101,6 +113,18 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_25_194614) do
     t.string "doctor_id", null: false
     t.string "patient_id", null: false
     t.string "diagnose_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "treatment_records", primary_key: "treatment_record_id", id: :string, force: :cascade do |t|
+    t.boolean "treatment_status", default: false
+    t.date "treatment_date"
+    t.date "last_treatment_date"
+    t.string "treatment_notes"
+    t.string "nurse_id", null: false
+    t.string "patient_id", null: false
+    t.string "treatment_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -118,7 +142,12 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_25_194614) do
   add_foreign_key "diagnoses", "doctors", primary_key: "doctor_id"
   add_foreign_key "diagnoses", "patients", primary_key: "patient_id"
   add_foreign_key "nurses", "wards", column: "ward_num", primary_key: "ward_num"
+  add_foreign_key "references", "doctors", primary_key: "doctor_id"
+  add_foreign_key "references", "patients", primary_key: "patient_id"
   add_foreign_key "treatment_plans", "diagnoses", column: "diagnose_id", primary_key: "diagnose_id"
   add_foreign_key "treatment_plans", "doctors", primary_key: "doctor_id"
   add_foreign_key "treatment_plans", "patients", primary_key: "patient_id"
+  add_foreign_key "treatment_records", "nurses", primary_key: "nurse_id"
+  add_foreign_key "treatment_records", "patients", primary_key: "patient_id"
+  add_foreign_key "treatment_records", "treatment_plans", column: "treatment_id", primary_key: "treatment_id"
 end

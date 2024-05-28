@@ -1,0 +1,21 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  treatment_record_id: MyString
+  treatment_status: false
+  treatment_date: 2024-05-29
+  last_treatment_date: 2024-05-29
+  treatment_notes: MyString
+  nurse_id: MyString
+  patient_id: MyString
+  treatment_id: MyString
+
+two:
+  treatment_record_id: MyString
+  treatment_status: false
+  treatment_date: 2024-05-29
+  last_treatment_date: 2024-05-29
+  treatment_notes: MyString
+  nurse_id: MyString
+  patient_id: MyString
+  treatment_id: MyString
