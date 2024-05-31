@@ -38,11 +38,56 @@ class ReferencesController < ApplicationController
     @reference.destroy
   end
 
+  def find_by_reference_id
+    set_by_reference_id
+    if @reference
+      render json: @reference
+    else
+      render json: { error: "Reference not found" }, status: :not_found
+    end
+  end
+
+  def find_by_patient_id
+    @references = Reference.where(patient_id: params[:patient_id])
+    if @references
+      render json: @references
+    else
+      render json: { error: "Reference not found" }, status: :not_found
+    end
+  end
+
+  def find_by_doctor_id
+    @references = Reference.where(doctor_id: params[:doctor_id])
+    if @references
+      render json: @references
+    else
+      render json: { error: "Reference not found" }, status: :not_found
+    end
+  end
+
+  def doctor_incoming_references
+    @references = Reference.where(referred_doctor_id: params[:referred_doctor_id]).where(reference_status: 'pending')
+    if @references
+      render json: @references
+    else
+      render json: { error: "Reference not found" }, status: :not_found
+    end
+  end
+
+
+
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_reference
       @reference = Reference.find(params[:id])
     end
+
+    def set_by_reference_id
+      @reference = Reference.find_by(reference_id: params[:reference_id])
+    end
+
+
 
     # Only allow a list of trusted parameters through.
     def reference_params

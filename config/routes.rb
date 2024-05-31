@@ -1,6 +1,24 @@
 Rails.application.routes.draw do
-  resources :references
-  resources :treatment_records
+  resources :tests do
+    collection do
+      get 'find_by_patient_id'
+    end
+  end
+  resources :references do
+    collection do
+      get 'find_by_reference_id'
+      get 'find_by_patient_id'
+      get 'find_by_doctor_id'
+      get 'doctor_incoming_references'
+    end
+  end
+  resources :treatment_records do
+    collection do
+      get 'find_by_patient_id'
+      get 'find_by_nurse_id'
+      patch 'nurse_confirm_treatment_record'
+    end
+  end
   resources :treatment_plans do
     collection do
       get 'find_by_treatment_id'
@@ -96,6 +114,8 @@ Rails.application.routes.draw do
       patch 'doctor_make_treatment_pause'
       get 'doctor_resume_treatment_table'
       patch 'doctor_make_treatment_resume'
+      get 'doctor_make_raferral_table'
+      get 'nurse_new_treatment_table'
     end
   end
 

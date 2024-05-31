@@ -1,0 +1,25 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  test_id: MyString
+  test_type: MyString
+  test_status: MyString
+  test_date: 2024-06-01
+  test_place: MyString
+  report_date: 2024-06-01
+  report_url: MyString
+  nurse_id: MyString
+  patient_id: MyString
+  doctor_id: MyString
+
+two:
+  test_id: MyString
+  test_type: MyString
+  test_status: MyString
+  test_date: 2024-06-01
+  test_place: MyString
+  report_date: 2024-06-01
+  report_url: MyString
+  nurse_id: MyString
+  patient_id: MyString
+  doctor_id: MyString

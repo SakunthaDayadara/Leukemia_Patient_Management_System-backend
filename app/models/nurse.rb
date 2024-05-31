@@ -1,6 +1,8 @@
 class Nurse < ApplicationRecord
   belongs_to :ward, foreign_key: 'ward_num'
   has_many :treatment_records, foreign_key: 'nurse_id'
+  has_many :tests, foreign_key: 'nurse_id'
+  has_many :appointments, foreign_key: 'nurse_id'
   has_secure_password
   before_create :generate_nurse_id
 

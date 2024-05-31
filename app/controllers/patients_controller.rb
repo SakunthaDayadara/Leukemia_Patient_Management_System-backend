@@ -137,6 +137,16 @@ class PatientsController < ApplicationController
     end
   end
 
+  def doctor_make_raferral_table
+    @patients = Patient.where(admission_status: "admitted").where(appointment_status: true).where(permanent_status: true).where(stage_of_treatment: "categorize_done").where(diagnose_status: true).where(current_diagnose: "advance_cancer_patient").where(advance_diagnose_status: true).where(treatment_status: [true, false])
+    render json: @patients
+  end
+
+  def nurse_new_treatment_table
+    @patients = Patient.where(admission_status: "admitted").where(appointment_status: true).where(permanent_status: true).where(stage_of_treatment: "categorize_done").where(diagnose_status: true).where(current_diagnose: "advance_cancer_patient").where(advance_diagnose_status: true).where(treatment_status: true)
+    render json: @patients
+  end
+
 
 
 
