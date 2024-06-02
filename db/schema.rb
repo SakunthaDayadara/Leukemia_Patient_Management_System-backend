@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_05_31_205102) do
+ActiveRecord::Schema[7.0].define(version: 2024_06_01_171950) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -119,6 +119,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_31_205102) do
     t.string "doctor_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "test_notes", default: "No Special Notes"
   end
 
   create_table "treatment_plans", primary_key: "treatment_id", id: :string, force: :cascade do |t|
@@ -158,6 +159,9 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_31_205102) do
   add_foreign_key "nurses", "wards", column: "ward_num", primary_key: "ward_num"
   add_foreign_key "references", "doctors", primary_key: "doctor_id"
   add_foreign_key "references", "patients", primary_key: "patient_id"
+  add_foreign_key "tests", "doctors", primary_key: "doctor_id"
+  add_foreign_key "tests", "nurses", primary_key: "nurse_id"
+  add_foreign_key "tests", "patients", primary_key: "patient_id"
   add_foreign_key "treatment_plans", "diagnoses", column: "diagnose_id", primary_key: "diagnose_id"
   add_foreign_key "treatment_plans", "doctors", primary_key: "doctor_id"
   add_foreign_key "treatment_plans", "patients", primary_key: "patient_id"

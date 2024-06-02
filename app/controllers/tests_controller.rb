@@ -38,12 +38,69 @@ class TestsController < ApplicationController
     @test.destroy
   end
 
+  def requested_tests
+    @tests = Test.where(test_status: "requested")
+    if @tests
+      render json: @tests
+    else
+      render json: { error: "Test not found" }, status: :not_found
+    end
+  end
+
+
+  def nurse_make_test_scheduled
+    @test = Test.find(params[:test_id])
+    if @test.update(test_status: "scheduled", nurse_id: params[:nurse_id], test_date: params[:test_date], test_place: params[:test_place])
+      render json: @test
+    else
+      render json: @test.errors, status: :unprocessable_entity
+    end
+  end
+
+
+  def scheduled_tests
+    @tests = Test.where(test_status: "scheduled")
+    if @tests
+      render json: @tests
+    else
+      render json: { error: "Test not found" }, status: :not_found
+    end
+  end
+
+  def doctor_pending_test
+    @tests = Test.where(test_status: %w[scheduled requested]).where(doctor_id: params[:doctor_id])
+    if @tests
+      render json: @tests
+    else
+      render json: { error: "Test not found" }, status: :not_found
+    end
+  end
+
+
   def find_by_patient_id
     @tests = Test.where(patient_id: params[:patient_id])
     if @tests
       render json: @tests
     else
       render json: { error: "Test not found" }, status: :not_found
+    end
+  end
+
+  def find_by_test_id
+    @test = Test.find(params[:test_id])
+    if @test
+      render json: @test
+    else
+      render json: { error: "Test not found" }, status: :not_found
+    end
+  end
+
+  def nurse_make_test_finished
+    @test = Test.find(params[:test_id])
+    if @test.update(test_status: "finished", report_date: params[:report_date], report_url: params[:report_url])
+      render json: @test
+    else
+      render json: @test.errors, status: :unprocessable_entity
     end
   end
 
@@ -55,6 +112,6 @@ class TestsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def test_params
-      params.require(:test).permit(:test_id, :test_type, :test_status, :test_date, :test_place, :report_date, :report_url, :nurse_id, :patient_id, :doctor_id)
+      params.require(:test).permit(:test_type, :test_status, :test_date, :test_place, :report_date, :report_url, :nurse_id, :patient_id, :doctor_id, :test_notes)
     end
 end

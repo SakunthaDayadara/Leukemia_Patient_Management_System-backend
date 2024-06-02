@@ -147,7 +147,14 @@ class PatientsController < ApplicationController
     render json: @patients
   end
 
-
+  def find_by_patient_id_or_nic
+    @patient = Patient.find_by(patient_id: params[:key]) || Patient.find_by(nic: params[:key])
+    if @patient
+      render json: @patient
+    else
+      render json: { error: "Patient not found" }, status: :not_found
+    end
+  end
 
 
 

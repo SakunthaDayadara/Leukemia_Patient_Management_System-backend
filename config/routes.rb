@@ -2,6 +2,12 @@ Rails.application.routes.draw do
   resources :tests do
     collection do
       get 'find_by_patient_id'
+      get 'requested_tests'
+      patch 'nurse_make_test_scheduled'
+      get 'scheduled_tests'
+      get 'doctor_pending_test'
+      get 'find_by_test_id'
+      patch 'nurse_make_test_finished'
     end
   end
   resources :references do
@@ -116,6 +122,7 @@ Rails.application.routes.draw do
       patch 'doctor_make_treatment_resume'
       get 'doctor_make_raferral_table'
       get 'nurse_new_treatment_table'
+      get 'find_by_patient_id_or_nic'
     end
   end
 
