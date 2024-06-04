@@ -8,6 +8,7 @@ class Patient < ApplicationRecord
   has_many :treatment_record, dependent: :destroy
   has_many :reference, dependent: :destroy
   has_many :test, dependent: :destroy
+  has_many :clinic, dependent: :destroy
 
   self.primary_key = 'patient_id'
 

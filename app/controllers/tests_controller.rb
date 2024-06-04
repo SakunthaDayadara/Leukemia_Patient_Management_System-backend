@@ -104,6 +104,15 @@ class TestsController < ApplicationController
     end
   end
 
+  def test_by_patient_id
+    @tests = Test.where(patient_id: params[:patient_id]).where(test_status: "finished")
+    if @tests
+      render json: @tests
+    else
+      render json: { error: "Test not found" }, status: :not_found
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_test

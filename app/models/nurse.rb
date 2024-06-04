@@ -5,6 +5,7 @@ class Nurse < ApplicationRecord
   has_many :appointments, foreign_key: 'nurse_id'
   has_secure_password
   before_create :generate_nurse_id
+  has_many :clinics, foreign_key: 'nurse_id'
 
   self.primary_key = 'nurse_id'
 

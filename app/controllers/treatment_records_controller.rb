@@ -69,6 +69,15 @@ class TreatmentRecordsController < ApplicationController
     end
   end
 
+  def treatment_records_by_patient_id
+    @treatment_records = TreatmentRecord.where(patient_id: params[:patient_id]).where(treatment_status: true)
+    if @treatment_records
+      render json: @treatment_records
+    else
+      render json: { error: "Treatment Record not found" }, status: :not_found
+    end
+  end
+
 
   private
     # Use callbacks to share common setup or constraints between actions.

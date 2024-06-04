@@ -1,4 +1,14 @@
 Rails.application.routes.draw do
+  resources :clinics do
+    collection do
+      get 'doctor_schedule_clinic_table'
+      get 'nurse_schedule_clinic_table'
+      patch 'nurse_make_clinic_ongoing'
+      get 'doctor_ongoing_clinic_table'
+      patch 'doctor_complete_clinic'
+      get 'clinic_by_patient_id'
+    end
+  end
   resources :tests do
     collection do
       get 'find_by_patient_id'
@@ -8,6 +18,7 @@ Rails.application.routes.draw do
       get 'doctor_pending_test'
       get 'find_by_test_id'
       patch 'nurse_make_test_finished'
+      get 'test_by_patient_id'
     end
   end
   resources :references do
@@ -23,6 +34,7 @@ Rails.application.routes.draw do
       get 'find_by_patient_id'
       get 'find_by_nurse_id'
       patch 'nurse_confirm_treatment_record'
+      get 'treatment_records_by_patient_id'
     end
   end
   resources :treatment_plans do

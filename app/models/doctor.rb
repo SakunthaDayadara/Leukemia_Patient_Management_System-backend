@@ -5,6 +5,8 @@ class Doctor < ApplicationRecord
   has_many :treatment_plans, dependent: :destroy
   has_many :references, dependent: :destroy
   has_many :tests, dependent: :destroy
+  has_many :clinics, dependent: :destroy
+
 
   self.primary_key = 'doctor_id'
 
