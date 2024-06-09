@@ -48,7 +48,7 @@ class ReferencesController < ApplicationController
   end
 
   def find_by_patient_id
-    @references = Reference.where(patient_id: params[:patient_id])
+    @references = Reference.where(patient_id: params[:patient_id]).where(reference_status: 'done')
     if @references
       render json: @references
     else
@@ -71,6 +71,15 @@ class ReferencesController < ApplicationController
       render json: @references
     else
       render json: { error: "Reference not found" }, status: :not_found
+    end
+  end
+
+  def doctor_make_reference_done
+    @reference = Reference.find(params[:reference_id])
+    if @reference.update(reference_status: 'done', referred_doctor_notes: params[:referred_doctor_notes])
+      render json: @reference
+    else
+      render json: @reference.errors, status: :unprocessable_entity
     end
   end
 

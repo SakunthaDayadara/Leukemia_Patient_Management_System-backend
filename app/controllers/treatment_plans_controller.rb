@@ -105,6 +105,16 @@ class TreatmentPlansController < ApplicationController
     end
   end
 
+  def doctor_finish_treatment
+    set_treatment_plan_by_patient_id
+    if @treatment_plan
+      @treatment_plan.update(treatment_status: "finished")
+      render json: { message: "Treatment finished successfully" }, status: :ok
+    else
+      render json: { error: "Treatment with doctor ID #{params[:patient_id]} not found" }, status: :not_found
+    end
+  end
+
 
   private
     # Use callbacks to share common setup or constraints between actions.

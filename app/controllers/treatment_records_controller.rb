@@ -78,6 +78,15 @@ class TreatmentRecordsController < ApplicationController
     end
   end
 
+  def last_treatment_record_by_patient_id
+    @treatment_record = TreatmentRecord.where(patient_id: params[:patient_id]).order(treatment_date: :desc).first
+    if @treatment_record
+      render json: @treatment_record
+    else
+      render json: { error: "Treatment Record not found" }, status: :not_found
+    end
+  end
+
 
   private
     # Use callbacks to share common setup or constraints between actions.

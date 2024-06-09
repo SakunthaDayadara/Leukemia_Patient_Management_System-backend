@@ -63,6 +63,16 @@ class BedsController < ApplicationController
     end
   end
 
+  def discharge_patient_by_patient_id
+    @bed = Bed.find_by(patient_id: params[:patient_id])
+    if @bed
+      @bed.update(patient_id: nil, is_occupied: false)
+      render json: { message: 'Patient discharged successfully' }, status: :ok
+    else
+      render json: { error: "Patient with ID #{params[:patient_id]} not found" }, status: :not_found
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_bed

@@ -57,6 +57,14 @@ class ApplicationController < ActionController::API
   end
 
 
+  # Method to format phone number
+  def format_phone_number(phone_number)
+    last_nine_digits = phone_number[-9..-1]
+    formatted_number = "+94" + last_nine_digits
+    formatted_number
+  end
+
+
 
 
 end

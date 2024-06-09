@@ -2,6 +2,7 @@ class TreatmentPlan < ApplicationRecord
   belongs_to :patient
   belongs_to :doctor
   belongs_to :diagnosis, primary_key: :diagnose_id, foreign_key: :diagnose_id
+  has_many :treatment_record, primary_key: :treatment_id, foreign_key: :treatment_id, dependent: :destroy
   before_create :generate_treatment_plan_id
 
 

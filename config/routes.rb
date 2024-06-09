@@ -7,6 +7,10 @@ Rails.application.routes.draw do
       get 'doctor_ongoing_clinic_table'
       patch 'doctor_complete_clinic'
       get 'clinic_by_patient_id'
+      get 'last_clinic_by_patient_id'
+      get 'nurse_on_going_clinic_table'
+      get 'doctor_unfinished_clinic_table'
+      patch 'doctor_reschedule_clinic'
     end
   end
   resources :tests do
@@ -19,6 +23,8 @@ Rails.application.routes.draw do
       get 'find_by_test_id'
       patch 'nurse_make_test_finished'
       get 'test_by_patient_id'
+      get 'last_test_by_patient_id'
+      patch 'nurse_reschedule_test'
     end
   end
   resources :references do
@@ -27,6 +33,7 @@ Rails.application.routes.draw do
       get 'find_by_patient_id'
       get 'find_by_doctor_id'
       get 'doctor_incoming_references'
+      patch 'doctor_make_reference_done'
     end
   end
   resources :treatment_records do
@@ -35,6 +42,7 @@ Rails.application.routes.draw do
       get 'find_by_nurse_id'
       patch 'nurse_confirm_treatment_record'
       get 'treatment_records_by_patient_id'
+      get 'last_treatment_record_by_patient_id'
     end
   end
   resources :treatment_plans do
@@ -46,6 +54,7 @@ Rails.application.routes.draw do
       patch 'doctor_pause_treatment'
       patch 'doctor_resume_treatment'
       patch 'doctor_change_treatment_type'
+      patch 'doctor_finish_treatment'
     end
   end
   resources :diagnoses do
@@ -61,6 +70,7 @@ Rails.application.routes.draw do
       get 'get_available_beds_by_ward'
       patch 'admit_patient'
       patch 'discharge_patient'
+      patch 'discharge_patient_by_patient_id'
     end
   end
   resources :appointments do
@@ -80,6 +90,8 @@ Rails.application.routes.draw do
       patch 'nurse_make_test_done'
       patch 'nurse_make_to_diagnose'
       get 'find_by_patient_id'
+      get 'last_appointment_by_patient_id'
+      get 'nurse_unfinished_appointments'
     end
   end
   resources :nurses do
@@ -135,6 +147,8 @@ Rails.application.routes.draw do
       get 'doctor_make_raferral_table'
       get 'nurse_new_treatment_table'
       get 'find_by_patient_id_or_nic'
+      patch 'doctor_finish_treatment'
+      patch 'update_patient'
     end
   end
 

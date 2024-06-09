@@ -52,6 +52,15 @@ class ClinicsController < ApplicationController
     end
   end
 
+  def doctor_reschedule_clinic
+    @clinic = Clinic.find(params[:clinic_id])
+    if @clinic.update(clinic_date: params[:clinic_date])
+      render json: @clinic
+    else
+      render json: @clinic.errors, status: :unprocessable_entity
+    end
+  end
+
   def nurse_schedule_clinic_table
     @clinics = Clinic.where(clinic_status: 'scheduled')
     if @clinics
@@ -79,6 +88,15 @@ class ClinicsController < ApplicationController
     end
   end
 
+  def nurse_on_going_clinic_table
+    @clinics = Clinic.where(clinic_status: 'ongoing')
+    if @clinics
+      render json: @clinics
+    else
+      render json: {error: 'No ongoing clinics found'}
+    end
+  end
+
   def doctor_complete_clinic
     @clinic = Clinic.find(params[:clinic_id])
     if @clinic.update(clinic_status: 'completed', clinic_notes: params[:clinic_notes])
@@ -88,12 +106,30 @@ class ClinicsController < ApplicationController
     end
   end
 
+  def doctor_unfinished_clinic_table
+    @clinics = Clinic.where(clinic_status: %w[ongoing scheduled]).where(doctor_id: params[:doctor_id])
+    if @clinics
+      render json: @clinics
+    else
+      render json: {error: 'No ongoing clinics found'}
+    end
+  end
+
   def clinic_by_patient_id
     @clinics = Clinic.where(patient_id: params[:patient_id]).where(clinic_status: 'completed')
     if @clinics
       render json: @clinics
     else
       render json: {error: 'No clinics found'}
+    end
+  end
+
+  def last_clinic_by_patient_id
+    @clinic = Clinic.where(patient_id: params[:patient_id]).order(clinic_date: :desc).first
+    if @clinic
+      render json: @clinic
+    else
+      render json: {error: 'No clinic found'}
     end
   end
 

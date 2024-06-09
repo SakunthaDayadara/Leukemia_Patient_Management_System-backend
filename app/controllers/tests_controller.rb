@@ -67,6 +67,15 @@ class TestsController < ApplicationController
     end
   end
 
+  def nurse_reschedule_test
+    @test = Test.find(params[:test_id])
+    if @test.update(test_date: params[:test_date])
+      render json: @test
+    else
+      render json: @test.errors, status: :unprocessable_entity
+    end
+  end
+
   def doctor_pending_test
     @tests = Test.where(test_status: %w[scheduled requested]).where(doctor_id: params[:doctor_id])
     if @tests
@@ -108,6 +117,15 @@ class TestsController < ApplicationController
     @tests = Test.where(patient_id: params[:patient_id]).where(test_status: "finished")
     if @tests
       render json: @tests
+    else
+      render json: { error: "Test not found" }, status: :not_found
+    end
+  end
+
+  def last_test_by_patient_id
+    @test = Test.where(patient_id: params[:patient_id]).order(test_date: :desc).first
+    if @test
+      render json: @test
     else
       render json: { error: "Test not found" }, status: :not_found
     end

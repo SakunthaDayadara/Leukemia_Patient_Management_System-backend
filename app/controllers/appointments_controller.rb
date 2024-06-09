@@ -53,9 +53,9 @@ class AppointmentsController < ApplicationController
   end
 
   def make_reschedule
-    set_appointment_by_appointment_id
+    set_appointment_by_patient
     if @appointment
-      @appointment.update(appointment_status: "to reschedule")
+      @appointment.update(appointment_status: "to reschedule", appointment_date: params[:appointment_date])
       render json: @appointment
     else
       render json: { error: "Appointment not found" }, status: :not_found
@@ -115,6 +115,21 @@ class AppointmentsController < ApplicationController
     else
       render json: { error: "Appointment not found" }, status: :not_found
     end
+  end
+
+  def last_appointment_by_patient_id
+    @appointment = Appointment.where(patient_id: params[:patient_id]).order(appointment_date: :desc).first
+    if @appointment
+      render json: @appointment
+    else
+      render json: { error: "Appointment not found" }, status: :not_found
+    end
+  end
+
+
+  def nurse_unfinished_appointments
+    @appointments = Appointment.where(appointment_status: %w[pending confirmed])
+    render json: @appointments
   end
 
 

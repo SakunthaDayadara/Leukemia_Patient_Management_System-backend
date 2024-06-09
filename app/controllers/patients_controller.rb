@@ -67,7 +67,7 @@ class PatientsController < ApplicationController
   end
 
   def to_admit_table
-    @patients = Patient.where(admission_status: "diagnose_done").where(appointment_status: true).where(permanent_status: false).where(current_diagnose: "cancer_patient").where(diagnose_status: true)
+    @patients = Patient.where(admission_status: %w[diagnose_done clinic]).where(appointment_status: true).where(permanent_status: [false, true]).where(current_diagnose: %w[cancer_patient advance_cancer_patient]).where(diagnose_status: true)
     render json: @patients
   end
 
@@ -109,7 +109,7 @@ class PatientsController < ApplicationController
   end
 
   def doctor_change_category_treatment_table
-    @patients = Patient.where(admission_status: "admitted").where(appointment_status: true).where(permanent_status: true).where(stage_of_treatment: "categorize_done").where(diagnose_status: true).where(current_diagnose: "advance_cancer_patient").where(advance_diagnose_status: true).where(treatment_status: true)
+    @patients = Patient.where(admission_status: %w[admitted clinic]).where(appointment_status: true).where(permanent_status: true).where(stage_of_treatment: %w[categorize_done clinic]).where(diagnose_status: true).where(current_diagnose: "advance_cancer_patient").where(advance_diagnose_status: true).where(treatment_status: true)
     render json: @patients
   end
 
@@ -124,7 +124,7 @@ class PatientsController < ApplicationController
   end
 
   def doctor_resume_treatment_table
-    @patients = Patient.where(admission_status: "admitted").where(appointment_status: true).where(permanent_status: true).where(stage_of_treatment: "categorize_done").where(diagnose_status: true).where(current_diagnose: "advance_cancer_patient").where(advance_diagnose_status: true).where(treatment_status: false)
+    @patients = Patient.where(admission_status: %w[admitted clinic]).where(appointment_status: true).where(permanent_status: true).where(stage_of_treatment: %w[categorize_done clinic]).where(diagnose_status: true).where(current_diagnose: "advance_cancer_patient").where(advance_diagnose_status: true).where(treatment_status: false)
     render json: @patients
   end
 
@@ -138,12 +138,12 @@ class PatientsController < ApplicationController
   end
 
   def doctor_make_raferral_table
-    @patients = Patient.where(admission_status: "admitted").where(appointment_status: true).where(permanent_status: true).where(stage_of_treatment: "categorize_done").where(diagnose_status: true).where(current_diagnose: "advance_cancer_patient").where(advance_diagnose_status: true).where(treatment_status: [true, false])
+    @patients = Patient.where(admission_status: %w[admitted clinic]).where(appointment_status: [true, false]).where(permanent_status: true).where(stage_of_treatment: %w[categorize_done clinic initial_admitted]).where(diagnose_status: true).where(current_diagnose: %w[advance_cancer_patient cancer_patient]).where(advance_diagnose_status: [true, false]).where(treatment_status: [true, false])
     render json: @patients
   end
 
   def nurse_new_treatment_table
-    @patients = Patient.where(admission_status: "admitted").where(appointment_status: true).where(permanent_status: true).where(stage_of_treatment: "categorize_done").where(diagnose_status: true).where(current_diagnose: "advance_cancer_patient").where(advance_diagnose_status: true).where(treatment_status: true)
+    @patients = Patient.where(admission_status: %w[admitted clinic]).where(appointment_status: true).where(permanent_status: true).where(stage_of_treatment: %w[categorize_done clinic]).where(diagnose_status: true).where(current_diagnose: "advance_cancer_patient").where(advance_diagnose_status: true).where(treatment_status: true)
     render json: @patients
   end
 
@@ -153,6 +153,25 @@ class PatientsController < ApplicationController
       render json: @patient
     else
       render json: { error: "Patient not found" }, status: :not_found
+    end
+  end
+
+  def doctor_finish_treatment
+    set_patient_by_patient_id
+    if @patient.update(stage_of_treatment: "relapse", treatment_status: false)
+      render json: @patient
+    else
+      render json: @patient.errors, status: :unprocessable_entity
+    end
+  end
+
+
+  def update_patient
+    set_patient_by_patient_id
+    if @patient.update(patient_params)
+      render json: @patient
+    else
+      render json: @patient.errors, status: :unprocessable_entity
     end
   end
 
