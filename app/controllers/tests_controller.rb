@@ -50,8 +50,20 @@ class TestsController < ApplicationController
 
   def nurse_make_test_scheduled
     @test = Test.find(params[:test_id])
-    if @test.update(test_status: "scheduled", nurse_id: params[:nurse_id], test_date: params[:test_date], test_place: params[:test_place])
-      render json: @test
+    if @test
+      @test.update(test_status: "scheduled", nurse_id: params[:nurse_id], test_date: params[:test_date], test_place: params[:test_place])
+      @patient = Patient.find(@test.patient_id)
+      formatted_number = format_phone_number(@patient.telephone)
+      text = "Your test for #{@test.test_type} has been scheduled for #{@test.test_date}. Please come to #{@test.test_place} on that day."
+
+      response = HTTParty.post("#{ENV['BACKEND_URL']}/send_sms",
+                               body: { to: formatted_number, text: text })
+
+      if response.success?
+        render json: @test
+      else
+        render json: { error: 'Failed to send SMS' }, status: :unprocessable_entity
+      end
     else
       render json: @test.errors, status: :unprocessable_entity
     end
@@ -69,8 +81,20 @@ class TestsController < ApplicationController
 
   def nurse_reschedule_test
     @test = Test.find(params[:test_id])
-    if @test.update(test_date: params[:test_date])
-      render json: @test
+    if @test
+      @test.update(test_date: params[:test_date])
+      @patient = Patient.find(@test.patient_id)
+      formatted_number = format_phone_number(@patient.telephone)
+      text = "Your #{@test.test_type} Test has been rescheduled for #{@test.test_date}. Please come to #{@test.test_place} on that day."
+
+      response = HTTParty.post("#{ENV['BACKEND_URL']}/send_sms",
+                               body: { to: formatted_number, text: text })
+
+      if response.success?
+        render json: @test
+      else
+        render json: { error: 'Failed to send SMS' }, status: :unprocessable_entity
+      end
     else
       render json: @test.errors, status: :unprocessable_entity
     end

@@ -155,6 +155,7 @@ Rails.application.routes.draw do
   post 'stafflogin', to: 'staff_login#login'
   get 'staffautologin', to: 'staff_login#staff_auto_login'
   get 'adminautologin', to: 'staff_login#admin_auto_login'
+  post 'send_sms', to: 'sms#send_sms'
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Defines the root path route ("/")

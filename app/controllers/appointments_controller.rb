@@ -45,8 +45,20 @@ class AppointmentsController < ApplicationController
   def nurse_confirm_appointment
     set_appointment_by_appointment_id
     if @appointment
+      @patient = Patient.find(@appointment.patient_id)
+      formatted_number = format_phone_number(@patient.telephone)
+      text = "Your appointment has been confirmed. Please come to the hospital on #{@appointment.appointment_date}."
       @appointment.update(appointment_status: "confirmed", nurse_id: params[:nurse_id])
-      render json: @appointment
+
+      # Send SMS
+      response = HTTParty.post("#{ENV['BACKEND_URL']}/send_sms",
+                               body: { to: formatted_number, text: text })
+
+      if response.success?
+        render json: @appointment
+      else
+        render json: { error: 'Failed to send SMS' }, status: :unprocessable_entity
+      end
     else
       render json: { error: "Appointment not found" }, status: :not_found
     end
@@ -70,8 +82,19 @@ class AppointmentsController < ApplicationController
   def make_reschedule_done
     set_appointment_by_appointment_id
     if @appointment
+      @patient = Patient.find(@appointment.patient_id)
+      formatted_number = format_phone_number(@patient.telephone)
+      text = "Your request to reschedule appointment has been confirmed. Please come to the hospital on #{@appointment.appointment_date}."
       @appointment.update(appointment_status: "confirmed")
-      render json: @appointment
+
+      response = HTTParty.post("#{ENV['BACKEND_URL']}/send_sms",
+                               body: { to: formatted_number, text: text })
+
+      if response.success?
+        render json: @appointment
+      else
+        render json: { error: 'Failed to send SMS' }, status: :unprocessable_entity
+      end
     else
       render json: { error: "Appointment not found" }, status: :not_found
     end
@@ -99,11 +122,26 @@ class AppointmentsController < ApplicationController
 
   def nurse_make_test_done
     set_appointment_by_patient
+
     if @appointment
-      @appointment.update(fbc_status: true, bp_status: true, bmt_date: params[:bmt_date])
-      render json: @appointment
+      if @appointment.update(fbc_status: true, bp_status: true, bmt_date: params[:bmt_date])
+        @patient = Patient.find(@appointment.patient_id)
+        formatted_number = format_phone_number(@patient.telephone)
+        text = "Your Initial Bone Marrow Test is scheduled on #{@appointment.bmt_date}. Please come to the hospital on that day."
+
+        response = HTTParty.post("#{ENV['BACKEND_URL']}/send_sms",
+                                 body: { to: formatted_number, text: text })
+
+        if response.success?
+          render json: @appointment
+        else
+          render json: { error: 'Failed to send SMS' }, status: :unprocessable_entity
+        end
+      else
+        render json: { error: 'Failed to update appointment' }, status: :unprocessable_entity
+      end
     else
-      render json: { error: "Appointment not found" }, status: :not_found
+      render json: { error: 'Appointment not found' }, status: :not_found
     end
   end
 
@@ -191,7 +229,7 @@ class AppointmentsController < ApplicationController
   private
 
   def set_appointment_by_patient
-    @appointment = Appointment.where(patient_id: params[:patient_id])
+    @appointment = Appointment.find_by(patient_id: params[:patient_id])
   end
 
   def set_appointment_by_appointment_id

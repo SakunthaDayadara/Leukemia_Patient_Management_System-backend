@@ -22,7 +22,21 @@ class TreatmentRecordsController < ApplicationController
     @treatment_record.last_treatment_date = last_treatment_record&.treatment_date
 
     if @treatment_record.save
-      render json: @treatment_record, status: :created, location: @treatment_record
+      @patient = Patient.find(@treatment_record.patient_id)
+      @treatment_plan = TreatmentPlan.find(@treatment_record.treatment_id)
+      formatted_number = format_phone_number(@patient.telephone)
+      text = "Your have new Treatment scheduled under #{@treatment_plan.treatment_type} treatment plan on #{@treatment_record.treatment_date}."
+
+
+      # Send SMS
+      response = HTTParty.post("#{ENV['BACKEND_URL']}/send_sms",
+                               body: { to: formatted_number, text: text })
+
+      if response.success?
+        render json: @treatment_record, status: :created, location: @treatment_record
+      else
+        render json: { error: 'Failed to send SMS' }, status: :unprocessable_entity
+      end
     else
       render json: @treatment_record.errors, status: :unprocessable_entity
     end

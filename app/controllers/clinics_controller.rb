@@ -23,7 +23,21 @@ class ClinicsController < ApplicationController
     @clinic.last_clinic_date = last_clinic&.clinic_date
 
     if @clinic.save
-      render json: @clinic, status: :created, location: @clinic
+      @patient = Patient.find(@clinic.patient_id)
+      @doctor = Doctor.find(@clinic.doctor_id)
+      formatted_number = format_phone_number(@patient.telephone)
+      text = "Your #{@clinic.clinic_type} Clinic with #{@doctor.name} has been scheduled. Please come to the hospital on #{@clinic.clinic_date}."
+
+
+      # Send SMS
+      response = HTTParty.post("#{ENV['BACKEND_URL']}/send_sms",
+                               body: { to: formatted_number, text: text })
+
+      if response.success?
+        render json: @clinic, status: :created, location: @clinic
+      else
+        render json: { error: 'Failed to send SMS' }, status: :unprocessable_entity
+      end
     else
       render json: @clinic.errors, status: :unprocessable_entity
     end
@@ -55,7 +69,21 @@ class ClinicsController < ApplicationController
   def doctor_reschedule_clinic
     @clinic = Clinic.find(params[:clinic_id])
     if @clinic.update(clinic_date: params[:clinic_date])
-      render json: @clinic
+      @patient = Patient.find(@clinic.patient_id)
+      @doctor = Doctor.find(@clinic.doctor_id)
+      formatted_number = format_phone_number(@patient.telephone)
+      text = "Your #{@clinic.clinic_type} Clinic with #{@doctor.name} has been rescheduled to #{@clinic.clinic_date}."
+
+
+      # Send SMS
+      response = HTTParty.post("#{ENV['BACKEND_URL']}/send_sms",
+                               body: { to: formatted_number, text: text })
+
+      if response.success?
+        render json: @clinic
+      else
+        render json: { error: 'Failed to send SMS' }, status: :unprocessable_entity
+      end
     else
       render json: @clinic.errors, status: :unprocessable_entity
     end
