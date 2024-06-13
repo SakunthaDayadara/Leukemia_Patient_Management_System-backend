@@ -95,7 +95,7 @@ class PatientsController < ApplicationController
   end
 
   def doctor_categorize_table
-    @patients = Patient.where(admission_status: "admitted").where(appointment_status: true).where(permanent_status: true).where(accommodation_type: "admitted").where(diagnose_status: true).where(current_diagnose: "cancer_patient").where(advance_diagnose_status: false)
+    @patients = Patient.where(admission_status: %w[admitted diagnose_done]).where(appointment_status: true).where(permanent_status: [true, false]).where(accommodation_type: %w[admitted not_selected]).where(diagnose_status: true).where(current_diagnose: "cancer_patient").where(advance_diagnose_status: false)
     render json: @patients
   end
 
@@ -109,7 +109,7 @@ class PatientsController < ApplicationController
   end
 
   def doctor_change_category_treatment_table
-    @patients = Patient.where(admission_status: %w[admitted clinic]).where(appointment_status: true).where(permanent_status: true).where(stage_of_treatment: %w[categorize_done clinic]).where(diagnose_status: true).where(current_diagnose: "advance_cancer_patient").where(advance_diagnose_status: true).where(treatment_status: true)
+    @patients = Patient.where(admission_status: %w[admitted clinic diagnose_done]).where(appointment_status: true).where(permanent_status: [true, false]).where(stage_of_treatment: %w[categorize_done clinic initial_admitted]).where(diagnose_status: true).where(current_diagnose: "advance_cancer_patient").where(advance_diagnose_status: true).where(treatment_status: true)
     render json: @patients
   end
 
@@ -124,7 +124,7 @@ class PatientsController < ApplicationController
   end
 
   def doctor_resume_treatment_table
-    @patients = Patient.where(admission_status: %w[admitted clinic]).where(appointment_status: true).where(permanent_status: true).where(stage_of_treatment: %w[categorize_done clinic]).where(diagnose_status: true).where(current_diagnose: "advance_cancer_patient").where(advance_diagnose_status: true).where(treatment_status: false)
+    @patients = Patient.where(admission_status: %w[admitted clinic]).where(appointment_status: true).where(permanent_status: true).where(stage_of_treatment: %w[categorize_done clinic initial_admitted]).where(diagnose_status: true).where(current_diagnose: "advance_cancer_patient").where(advance_diagnose_status: true).where(treatment_status: false)
     render json: @patients
   end
 
@@ -138,12 +138,12 @@ class PatientsController < ApplicationController
   end
 
   def doctor_make_raferral_table
-    @patients = Patient.where(admission_status: %w[admitted clinic]).where(appointment_status: [true, false]).where(permanent_status: true).where(stage_of_treatment: %w[categorize_done clinic initial_admitted]).where(diagnose_status: true).where(current_diagnose: %w[advance_cancer_patient cancer_patient]).where(advance_diagnose_status: [true, false]).where(treatment_status: [true, false])
+    @patients = Patient.where(admission_status: %w[admitted clinic diagnose_done]).where(appointment_status: [true, false]).where(permanent_status: [true, false]).where(stage_of_treatment: %w[categorize_done clinic initial_admitted]).where(diagnose_status: true).where(current_diagnose: %w[advance_cancer_patient cancer_patient]).where(advance_diagnose_status: [true, false]).where(treatment_status: [true, false])
     render json: @patients
   end
 
   def nurse_new_treatment_table
-    @patients = Patient.where(admission_status: %w[admitted clinic]).where(appointment_status: true).where(permanent_status: true).where(stage_of_treatment: %w[categorize_done clinic]).where(diagnose_status: true).where(current_diagnose: "advance_cancer_patient").where(advance_diagnose_status: true).where(treatment_status: true)
+    @patients = Patient.where(admission_status: %w[admitted clinic diagnose_done]).where(appointment_status: true).where(permanent_status: [true, false]).where(stage_of_treatment: %w[categorize_done clinic initial_admitted]).where(diagnose_status: true).where(current_diagnose: "advance_cancer_patient").where(advance_diagnose_status: true).where(treatment_status: true)
     render json: @patients
   end
 
