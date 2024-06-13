@@ -58,3 +58,5 @@ production:
   database: backend_production
   username: backend
   password: <%= ENV["BACKEND_DATABASE_PASSWORD"] %>
+  host: <%= ENV["DATABASE_URL"] %>
+  port: 5432
