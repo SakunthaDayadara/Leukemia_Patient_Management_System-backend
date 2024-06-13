@@ -25,6 +25,12 @@ default: &default
 
 
 production:
-  <<: *default
-  url: <%= ENV["DATABASE_URL"] %>
+  adapter: postgresql
+  encoding: unicode
+  pool: 5
+  database: backend_production_hz6i
+  username: backend
+  password: <%= ENV['DATABASE_PASSWORD'] %>
+  host: <%= ENV['DATABASE_URL'] %>
+  port: 5432
 
